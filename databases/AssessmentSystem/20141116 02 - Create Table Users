@@ -1,0 +1,6 @@
+create table Users (
+id BIGINT NOT NULL AUTO_INCREMENT,
+login VARCHAR(50) NOT NULL,
+password VARCHAR(50) NOT NULL,
+PRIMARY KEY (id) 
+);
