@@ -11,15 +11,6 @@ package br.com.crawlerspring.controller;
  */
 public class Routes {
    
-    public static final String login = "/login",
-                               loginAct = login + "/act",
-                               loginNew = login + "/new",
-                               loginNewAct = loginNew + "/act",
-                               loginShow = login + "/show",
-                               main = "/main",
-                               mainShow = main + "/show",
-                               basicExercises = main + "/basicexercises",
-                               basicExercisesNew = basicExercises + "/new",
-                               basicExercisesAct = basicExercises + "/act", 
-                               basicExercisesUpdate = basicExercises + "/update";
+    public static final String main = "/main",
+                               mainShow = main + "/show";
 }
