@@ -19,8 +19,10 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.sandbox.queries.regex.RegexQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -61,8 +63,8 @@ public class Searcher {
     
     public List<br.com.crawlerspring.model.Document> parametrizeDocuments(String parameters) throws Exception{
         List<br.com.crawlerspring.model.Document> parametrizedDocuments = new ArrayList<br.com.crawlerspring.model.Document>();
-        Query q = new QueryParser(Version.LUCENE_40, "title", analyzer).parse(parameters);
-        
+       
+        RegexQuery q = new RegexQuery(new Term("title", ".*"+parameters+".*"));
         int hitsPerPage = 10;
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
