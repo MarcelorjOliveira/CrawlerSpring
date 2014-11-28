@@ -7,12 +7,24 @@ package br.com.crawlerspring.controller;
 
 import br.com.crawlerspring.dao.JdbcDocumentDao;
 import br.com.crawlerspring.model.CrawlerSpring;
+import br.com.crawlerspring.model.Document;
+import br.com.crawlerspring.model.Searcher;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**     
@@ -23,41 +35,91 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
     
     private JdbcDocumentDao documentDao = new JdbcDocumentDao();
+    private Document document;
+    private List<Document> parametrizedDocuments;
+    private Searcher searcher;
     
-    @RequestMapping(Routes.main)
-    public String actMain() throws Exception{
-        documentDao.emptyDocuments();
-        
+    private void initCrawler() throws Exception{
         String crawlStorageFolder = "/data/crawl/root";
         int numberOfCrawlers = 7;
 
         CrawlConfig config = new CrawlConfig();
                 config.setCrawlStorageFolder(crawlStorageFolder);
 
-                /*
-                 * Instantiate the controller for this crawl.
-                 */
         PageFetcher pageFetcher = new PageFetcher(config);
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-                /*
-                 * For each crawl, you need to add some seed urls. These are the first
-                 * URLs that are fetched and then the crawler starts following links
-                 * which are found in these pages
-                 */
         controller.addSeed("http://www.ics.uci.edu/~welling/");
         controller.addSeed("http://www.ics.uci.edu/~lopes/");
         controller.addSeed("http://www.ics.uci.edu/");
 
-                /*
-                 * Start the crawl. This is a blocking operation, meaning that your code
-                 * will reach the line after this only when crawling is finished.
-                 */
         controller.start(CrawlerSpring.class, numberOfCrawlers);  
         
+    }
+    
+    private void prepareDocuments(){
+        document = new Document();
+        document.setId("document_1");
+        Calendar ca = Calendar.getInstance();
+        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
+        document.setLink("http://www.coca-cola.com.br");
+        document.setSource("webPage");
+        document.setAuthor("crawler Spring");
+        document.setTitle("cocacola");
+        document.setContent("coca");
+        
+        documentDao.createDocument(document);
+        
+        document = new Document();
+        document.setId("document_2");
+        ca = Calendar.getInstance();
+        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
+        document.setLink("http://www.rockinrio.com.br");
+        document.setSource("webPage");
+        document.setAuthor("crawler Spring");
+        document.setTitle("cidade");
+        document.setContent("metal");
+        
+        documentDao.createDocument(document);
+        
+        document = new Document();
+        document.setId("document_3");
+        ca = Calendar.getInstance();
+        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
+        document.setLink("http://www.pepsi.com.br");
+        document.setSource("webPage");
+        document.setAuthor("crawler Spring");
+        document.setTitle("pepsi");
+        document.setContent("all the way");
+        
+        documentDao.createDocument(document);
+        
+    }
+    
+    @RequestMapping(Routes.main)
+    public String main() throws Exception{
+        documentDao.emptyDocuments();
+        
+        //initCrawler();
+        
+        searcher = new Searcher();
+        
+        prepareDocuments();
+        
+        searcher.prepareSearch();
+        
         return Routes.mainShow;
+    }
+    
+    @RequestMapping(Routes.mainAct)
+    public String actMain(HttpServletRequest request, Model model) throws Exception{
+        String parameters = request.getParameter("parameters");
+        parametrizedDocuments = searcher.parametrizeDocuments(parameters);
+        model.addAttribute("documents", parametrizedDocuments);
+        
+        return Routes.mainView;
     }
     
 }

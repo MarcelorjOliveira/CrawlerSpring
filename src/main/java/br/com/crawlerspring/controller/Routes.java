@@ -12,5 +12,7 @@ package br.com.crawlerspring.controller;
 public class Routes {
    
     public static final String main = "/main",
-                               mainShow = main + "/show";
+                               mainShow = main + "/show",
+                               mainAct = main +"/act", 
+                               mainView = main+ "/view";
 }

@@ -10,7 +10,9 @@ import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,7 +41,10 @@ public class CrawlerSpring extends WebCrawler {
                 document.setTitle("document_"+Integer.toString(cont));
 
                 document.setAuthor("crawler Spring");
-                document.setDate((java.sql.Date)( new Date() ) );
+                
+                Calendar ca = new GregorianCalendar();
+                
+                document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
                 
                 document.setLink(page.getWebURL().getURL());
                 

@@ -17,7 +17,7 @@
         <center><h1>Crawler Spring</h1></center>
         <br>
         <br>
-        <form action ="" method="post">
+        <form action ="<%= Routes.mainAct %>" method="post">
             <center> <input type ='text' name="parameters"/> <input type ="submit" value="Entrar"/> </center>
         </form>
     </body>
