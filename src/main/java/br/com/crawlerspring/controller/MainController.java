@@ -58,55 +58,14 @@ public class MainController {
         controller.start(CrawlerSpring.class, numberOfCrawlers);  
         
     }
-    
-    private void prepareDocuments(){
-        document = new Document();
-        document.setId("document_1");
-        Calendar ca = Calendar.getInstance();
-        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
-        document.setLink("http://www.coca-cola.com.br");
-        document.setSource("webPage");
-        document.setAuthor("crawler Spring");
-        document.setTitle("cocacola");
-        document.setContent("coca");
         
-        documentDao.createDocument(document);
-        
-        document = new Document();
-        document.setId("document_2");
-        ca = Calendar.getInstance();
-        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
-        document.setLink("http://www.rockinrio.com.br");
-        document.setSource("webPage");
-        document.setAuthor("crawler Spring");
-        document.setTitle("cidade");
-        document.setContent("metal");
-        
-        documentDao.createDocument(document);
-        
-        document = new Document();
-        document.setId("document_3");
-        ca = Calendar.getInstance();
-        document.setDate( new java.sql.Date(ca.getTimeInMillis()) );
-        document.setLink("http://www.pepsi.com.br");
-        document.setSource("webPage");
-        document.setAuthor("crawler Spring");
-        document.setTitle("pepsi");
-        document.setContent("all the way");
-        
-        documentDao.createDocument(document);
-        
-    }
-    
     @RequestMapping(Routes.main)
     public String main() throws Exception{
         documentDao.emptyDocuments();
         
-        //initCrawler();
+        initCrawler();
         
         searcher = new Searcher();
-        
-        prepareDocuments();
         
         searcher.prepareSearch();
         
